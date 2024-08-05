@@ -10,9 +10,9 @@ app.use(express.json());
 app.use(cors());
 let pool;
 
-const environment = "local";
+const environment = "live";
 switch (environment) {
-  case "live":
+  case "local":
     pool = mysql.createPool({
       host: "localhost",
       user: "root",
