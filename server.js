@@ -1,19 +1,38 @@
+import cors from "cors";
 import express from "express";
 import mysql from "mysql";
-import cors from "cors";
+require("dotenv").config();
 
 const app = express();
 const port = 2014;
 
 app.use(express.json());
 app.use(cors());
+let pool;
 
-const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "form",
-});
+const environment = "local";
+switch (environment) {
+  case "live":
+    pool = mysql.createPool({
+      host: "localhost",
+      user: "root",
+      password: "root",
+      database: "form",
+    });
+    break;
+
+  case "live":
+    pool = mysql.createPool({
+      host: "35.232.16.120",
+      user: "root",
+      password: "or3dovIa7xn'EQ<>",
+      database: "form",
+    });
+    break;
+
+  default:
+    break;
+}
 
 app.get("/", async (req, res) => {
   try {
