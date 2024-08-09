@@ -47,17 +47,25 @@ app.get("/", async (req, res) => {
 });
 
 app.post("/users", async (req, res) => {
-  try {
-    const { name, email, mobile, sex, dob, address, type } = req.body;
-    const query =
-      "INSERT INTO user (name, email, mobile, sex, dob, address, type) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    const values = [name, email, mobile, sex, dob, address, type];
-    console.log(values);
-    await pool.execute(query, values);
-    res.send(`User added successfully!`);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
+  const { name, email, mobile, sex, dob, address, type } = req.body;
+  const query = "SELECT * FROM users WHERE email = ?";
+  const values = [email];
+  const [rows, fields] = await pool.execute(query, values);
+  if (rows.length > 0) {
+    console.log("Email already exists");
+    res.status(400).send({ error: `Email already exist` });
+  } else {
+    try {
+      const query =
+        "INSERT INTO user (name, email, mobile, sex, dob, address, type) VALUES (?, ?, ?, ?, ?, ?, ?)";
+      const values = [name, email, mobile, sex, dob, address, type];
+      console.log(values);
+      await pool.execute(query, values);
+      res.send(`User added successfully!`);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Server error");
+    }
   }
 });
 
