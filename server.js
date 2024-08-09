@@ -48,7 +48,7 @@ app.get("/", async (req, res) => {
 
 app.post("/users", async (req, res) => {
   const { name, email, mobile, sex, dob, address, type } = req.body;
-  const query = "SELECT * FROM users WHERE email = ?";
+  const query = "SELECT * FROM user WHERE email = ?";
   const values = [email];
   const [rows, fields] = await pool.execute(query, values);
   if (rows.length > 0) {
