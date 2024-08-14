@@ -53,7 +53,7 @@ app.post("/users", async (req, res) => {
   const [rows, fields] = await pool.execute(query, values);
   if (rows.length > 0) {
     console.log("Email already exists");
-    res.status(400).send({ error: `Email already exist` });
+    res.status(400).send("Email already exist");
   } else {
     try {
       const query =
@@ -61,7 +61,7 @@ app.post("/users", async (req, res) => {
       const values = [name, email, mobile, sex, dob, address, type];
       console.log(values);
       await pool.execute(query, values);
-      res.send(`User added successfully!`);
+      res.status.send(`User added successfully!`);
     } catch (err) {
       console.error(err);
       res.status(500).send("Server error");
@@ -70,18 +70,26 @@ app.post("/users", async (req, res) => {
 });
 
 app.put("/users/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const { name, email, mobile, sex, dob, address } = req.body;
-    const query =
-      "UPDATE user SET name = ?, email = ?, mobile = ?, sex = ?, dob = ?, address=?  WHERE id = ?";
-    const values = [name, email, mobile, sex, dob, address, id];
-    console.log(values, "backend");
-    await pool.execute(query, values);
-    res.send(`User updated successfully!`);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
+  const id = req.params.id;
+  const { name, email, mobile, sex, dob, address } = req.body;
+  const query = "SELECT * FROM user WHERE email = ? && id != ?";
+  const values = [email];
+  const [rows, fields] = await pool.execute(query, values);
+  if (rows.length > 0) {
+    console.log("Email already exists");
+    res.status(400).send({ error: "Email already exist" });
+  } else {
+    try {
+      const query =
+        "UPDATE user SET name = ?, email = ?, mobile = ?, sex = ?, dob = ?, address=?  WHERE id = ?";
+      const values = [name, email, mobile, sex, dob, address, id];
+      console.log(values, "backend");
+      await pool.execute(query, values);
+      res.send(`User updated successfully!`);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Server error");
+    }
   }
 });
 
