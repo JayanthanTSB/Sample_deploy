@@ -61,7 +61,7 @@ app.post("/users", async (req, res) => {
       const values = [name, email, mobile, sex, dob, address, type];
       console.log(values);
       await pool.execute(query, values);
-      res.status.send(`User added successfully!`);
+      res.send(`User added successfully!`);
     } catch (err) {
       console.error(err);
       res.status(500).send("Server error");
