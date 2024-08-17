@@ -73,7 +73,7 @@ app.put("/users/:id", async (req, res) => {
   const id = req.params.id;
   const { name, email, mobile, sex, dob, address } = req.body;
   const query = "SELECT * FROM user WHERE email = ? && id != ?";
-  const values = [email];
+  const values = [email, id];
   const [rows, fields] = await pool.execute(query, values);
   if (rows.length > 0) {
     console.log("Email already exists");
